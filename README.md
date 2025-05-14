@@ -15,8 +15,7 @@ of the library.
 Location being the directory you want to clone to.
 
 ```bash
-git clone --branch master --recurse-submodules --shallow-submodules \
-    https://github.com/xexaaron/AbyssFreetype.git $LOCATION
+git clone --branch master --recurse-submodules --shallow-submodules https://github.com/xexaaron/AbyssFreetype.git $LOCATION
 ```
 
 ```bash
