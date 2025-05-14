@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 	std::filesystem::path font_dir = std::filesystem::path(argv[0]).parent_path() / "Fonts";
 
 	{
-		auto ttf = aby::ft::test::load_ttf(font_dir / "IBMPlexMono-Regular.ttf");
+		auto ttf = aby::ft::test::load_ttf(font_dir / "IBMPlexMono" / "IBMPlexMono-Regular.ttf");
 		if (!ttf.has_value()) {
 			FT_ERROR("Test Failed: {}", "Load TTF");
 			res = 1;
@@ -65,5 +65,7 @@ int main(int argc, char** argv) {
 			FT_STATUS("Test Succeeded: {}", "Load TTF");
 		}
 	}
+
+	
 	return res;
 }
