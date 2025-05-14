@@ -85,6 +85,7 @@ int main(int argc, char** argv) {
     aby::util::InFontCfg in_cfg;
     aby::ft::FontCfg out_cfg;
     bool version = false;
+    bool quiet = false;
 
     if (!cmd.opt("file", "Font file to load", &in_cfg.file, true)
        .opt("pt", "Requested point size of font (Default: '12')", &in_cfg.pt)
@@ -92,11 +93,14 @@ int main(int argc, char** argv) {
        .opt("range", "Character range to load (Default: '32,128')", &in_cfg.range)
        .opt("cache_dir", "Directory to output cached png and binary glyph to (Default '.')", &in_cfg.cache_dir)
        .flag("version", "Display version number and build info", &version, false, {"file"})
-       .flag("v", "Enable verbose log messages", &in_cfg.verbose, false)
+       .flag("v", "Enable verbose log messages", &in_cfg.verbose)
+       .flag("q", "Suppress output log messages", &quiet)
        .parse(argc, argv, opts) || !parse_font_cfg(in_cfg, out_cfg))
     {
         return 1;
     }
+
+    if (quiet) out_cfg.verbose = false;
 
     if (version) {
 #ifndef NDEBUG
@@ -118,21 +122,22 @@ int main(int argc, char** argv) {
     aby::ft::Library& lib = aby::ft::Library::get();
     aby::ft::FontData data = lib.create_font_data(in_cfg.cache_dir, out_cfg);
 
-    std::string load_info;
-    load_info += std::format("  Succesfully Loaded font file: \033[4m\033[34m{}\033[0m\n", in_cfg.file);
-    load_info += std::format("    \033[36mName:        \033[0m\033[30m{}\033[0m\n", data.name);
-    load_info += std::format("    \033[36mGlyphs:      \033[0m\033[30m{}\033[0m\n", data.glyphs.size());
-    load_info += std::format("    \033[36mMonospaced:  \033[0m\033[30m{}\033[0m\n", data.is_mono);
-    load_info += std::format("    \033[36mText Height: \033[0m\033[30m{}\033[0m\n", data.text_height);
-    load_info += std::format("    \033[36mOutput PNG:  \033[0m\033[4m\033[34m{}\033[0m\n", std::filesystem::absolute(data.png).string());
-    load_info += std::format("    \033[36mPoint Size:  \033[0m\033[30m{}\033[0m\n", out_cfg.pt);
-    load_info += std::format("    \033[36mDPI:         \033[0m\033[30m({}, {})\033[0m\n", out_cfg.dpi.x, out_cfg.dpi.y);
-    load_info += std::format("    \033[36mChar Range:  \033[0m\033[30m({}, {})\033[0m\n", static_cast<uint32_t>(out_cfg.range.start), static_cast<uint32_t>(out_cfg.range.end));
+    if (!quiet) {
+        std::string load_info;
+        load_info += std::format("  Succesfully Loaded font file: \033[4m\033[34m{}\033[0m\n", in_cfg.file);
+        load_info += std::format("    \033[36mName:        \033[0m\033[30m{}\033[0m\n", data.name);
+        load_info += std::format("    \033[36mGlyphs:      \033[0m\033[30m{}\033[0m\n", data.glyphs.size());
+        load_info += std::format("    \033[36mMonospaced:  \033[0m\033[30m{}\033[0m\n", data.is_mono);
+        load_info += std::format("    \033[36mText Height: \033[0m\033[30m{}\033[0m\n", data.text_height);
+        load_info += std::format("    \033[36mOutput PNG:  \033[0m\033[4m\033[34m{}\033[0m\n", std::filesystem::absolute(data.png).string());
+        load_info += std::format("    \033[36mPoint Size:  \033[0m\033[30m{}\033[0m\n", out_cfg.pt);
+        load_info += std::format("    \033[36mDPI:         \033[0m\033[30m({}, {})\033[0m\n", out_cfg.dpi.x, out_cfg.dpi.y);
+        load_info += std::format("    \033[36mChar Range:  \033[0m\033[30m({}, {})\033[0m\n", static_cast<uint32_t>(out_cfg.range.start), static_cast<uint32_t>(out_cfg.range.end));
 
-    aby::util::pretty_print(load_info, "AbyssFreetype", aby::util::Colors{
-        .box = aby::util::EColor::GREEN,
-        .ctx = aby::util::EColor::YELLOW
-    });
-
+        aby::util::pretty_print(load_info, "AbyssFreetype", aby::util::Colors{
+            .box = aby::util::EColor::GREEN,
+            .ctx = aby::util::EColor::YELLOW
+        });
+    }
     return 0;
 }
