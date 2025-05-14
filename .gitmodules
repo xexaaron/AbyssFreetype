@@ -16,3 +16,6 @@
 [submodule "Vendor/freetype"]
 	path = Vendor/freetype
 	url = https://github.com/xexaaron/freetype.git
+[submodule "Vendor/CmdLine"]
+	path = Vendor/CmdLine
+	url = https://github.com/xexaaron/CmdLine
