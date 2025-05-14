@@ -4,6 +4,7 @@
 
 #include <format>
 #include <iostream>
+#include <chrono>
 
 #include "FT/serializer.h"
 #include "stb/stb_image_write.h"
@@ -32,10 +33,17 @@ namespace aby::ft {
 		std::string path_str = cfg.path.string();
 		FT_CHECK(::FT_New_Face(m_Library, path_str.c_str(), FT_Long(0), &face));
 		FT_CHECK(::FT_Set_Char_Size(face, FT_F26Dot6(0), cfg.pt << 6u, static_cast<FT_UInt>(cfg.dpi.x), static_cast<FT_UInt>(cfg.dpi.y)));
+		if (cfg.verbose) {
+			FT_STATUS("Created new font face: {}", path_str);
+			FT_STATUS(" -- Character Width: {}", cfg.pt << 6u);
+		}
 		return face;
 	}
 
-	void Library::destroy_face(::FT_FaceRec_* face) {
+	void Library::destroy_face(::FT_FaceRec_* face, const FontCfg& cfg) {
+		if (cfg.verbose) {
+			FT_STATUS("Destroying current font face: {}", cfg.path.string());
+		}
 		::FT_Done_Face(face);
 	}
 
@@ -43,16 +51,37 @@ namespace aby::ft {
 		auto name       = cfg.path.filename().string();
 		auto glyph_file = cache_path(cache_dir, name, ".bin", cfg);
 		auto png_file   = cache_path(cache_dir, name, ".png", cfg);
-
 		FontData out;
+
+		std::chrono::time_point<std::chrono::high_resolution_clock> start;
+		if (cfg.verbose) {
+			start = std::chrono::high_resolution_clock::now();
+		}
+		
 		if (std::filesystem::exists(png_file) && std::filesystem::exists(glyph_file)) {
+			if (cfg.verbose) {
+				FT_STATUS("Loading font from cache: {}", glyph_file.string());
+			}
 			out = load_glyph_range_bin(glyph_file, cfg);
 		} else {
+			if (cfg.verbose) {
+				FT_STATUS("Loading font from file: {}", cfg.path.filename().string());
+			} 
 			FT_Face face = create_face(cfg);
 			out          = load_glyph_range_ttf(face, png_file, cfg);
 			cache_glyphs(cache_dir, name, out, cfg);
-			destroy_face(face);
+			destroy_face(face, cfg);
 		}
+
+		if (cfg.verbose) {
+			using clock = std::chrono::high_resolution_clock;
+			using ns = std::chrono::nanoseconds;
+			float elapsed_seconds =
+				std::chrono::duration_cast<ns>(clock::now() - start).count()
+				* 0.001f * 0.001f;
+			FT_STATUS("Font Loading took a total of {}ms", elapsed_seconds);
+		}
+
 		out.name = name;
 		out.png  = png_file;
 		return out;

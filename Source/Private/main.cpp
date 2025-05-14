@@ -6,10 +6,11 @@
 #endif
 
 struct InFontCfg {
-    std::string file = "";
-    std::string pt = "12";
-    std::string dpi = "96,96";
-    std::string range = "32,128";
+    std::string file      = "";
+    std::string pt        = "12";
+    std::string dpi       = "96,96";
+    std::string range     = "32,128";
+    bool        verbose   = false;
     std::string cache_dir = ".";
 };
 
@@ -61,8 +62,9 @@ bool parse_font_cfg(const InFontCfg& in_cfg, aby::ft::FontCfg& out_cfg) {
         return false;
     }
 
+    out_cfg.verbose = in_cfg.verbose;
     out_cfg.path = in_cfg.file;
-
+    
     return true;
 }
 
@@ -84,8 +86,9 @@ int main(int argc, char** argv) {
        .opt("pt", "Requested point size of font (Default: '12')", &in_cfg.pt)
        .opt("dpi", "Dots per inch (Default: '96,96')", &in_cfg.dpi)
        .opt("range", "Character range to load (Default: '32,128')", &in_cfg.range)
-       .opt("cache_dir", "Directory to output cached png and binary glyph to (Default '.')", &in_cfg.range)
+       .opt("cache_dir", "Directory to output cached png and binary glyph to (Default '.')", &in_cfg.cache_dir)
        .flag("version", "Display version number and build info", &version, false, {"file"})
+       .flag("v", "Enable verbose log messages", &in_cfg.verbose, false)
        .parse(argc, argv, opts) || !parse_font_cfg(in_cfg, out_cfg))
     {
         return 1;

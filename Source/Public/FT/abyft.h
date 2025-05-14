@@ -60,6 +60,7 @@ namespace aby::ft {
 		vec2 dpi = { 96.f, 96.f };
 		CharRange range = { 32, 128 };
 		std::filesystem::path path = "";
+		bool verbose = false;
 	};
 
 } // namespace aby::ft
@@ -79,7 +80,7 @@ namespace aby::ft {
 		FontData create_font_data(const std::filesystem::path& cache_dir, const FontCfg& cfg);
 	private:
 		::FT_FaceRec_* create_face(const FontCfg& cfg);
-		void destroy_face(::FT_FaceRec_* face);
+		void destroy_face(::FT_FaceRec_* face, const FontCfg& cfg);
 		FontData load_glyph_range(const std::filesystem::path& cache_dir, const FontCfg& cfg);
 		FontData load_glyph_range_ttf(FT_FaceRec_* face, const std::filesystem::path& png_file, const FontCfg& cfg);
 		FontData load_glyph_range_bin(const std::filesystem::path& cache, const FontCfg& cfg);
