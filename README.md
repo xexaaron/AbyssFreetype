@@ -12,14 +12,16 @@ of the library.
 
 ## Cloning / Building
 
-Location being the directory you want to clone to.
+### Cloning
 
 ```bash
-git clone --branch master --recurse-submodules --shallow-submodules https://github.com/xexaaron/AbyssFreetype.git $LOCATION
+git clone --branch master --recurse-submodules --shallow-submodules https://github.com/xexaaron/AbyssFreetype.git
 ```
 
+### Building
+
 ```bash
-cd $LOCATION
+cd AbyssFreetype
 # Directory must be named build to work with certain development tools
 mkdir build
 cd build
