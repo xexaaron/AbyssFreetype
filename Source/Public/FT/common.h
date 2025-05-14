@@ -28,7 +28,7 @@ extern "C" __declspec(dllimport) void __stdcall DebugBreak();
 #define FT_ASSERT(cond, fmt, ...)                                                                         \
 	do {                                                                                                  \
 		if (!(cond)) {                                                                                    \
-			std::cerr << std::format("[freetype] [assert] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
+			std::cerr << std::format("[AbyssFreetype] [assert] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
 			ABY_DBG_BREAK();                                                                              \
 		}                                                                                                 \
 	} while (0);
@@ -38,15 +38,15 @@ extern "C" __declspec(dllimport) void __stdcall DebugBreak();
 	} while (0);
 #define FT_ERROR(fmt, ...)                                                              \
 	do {                                                                                \
-		std::cerr << std::format("[freetype] [error] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
+		std::cerr << std::format("[AbyssFreetype] [error] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
 	} while (0);
 #define FT_WARN(fmt, ...)                                                              \
 	do {                                                                               \
-		std::cerr << std::format("[freetype] [warn] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
+		std::cerr << std::format("[AbyssFreetype] [warn] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
 	} while (0);
 #define FT_STATUS(fmt, ...)                                                              \
 	do {                                                                                 \
-		std::cout << std::format("[freetype] [status] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
+		std::cout << std::format("[AbyssFreetype] [status] " fmt __VA_OPT__(, ) __VA_ARGS__) << std::endl; \
 	} while (0);
 
 namespace aby::ft {
