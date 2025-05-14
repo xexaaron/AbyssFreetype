@@ -1,0 +1,18 @@
+[submodule "Vendor/zlib"]
+	path = Vendor/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "Vendor/freetype"]
+	path = Vendor/freetype
+	url = https://github.com/freetype/freetype.git
+[submodule "Vendor/bzip2"]
+	path = Vendor/bzip2
+	url = https://github.com/libarchive/bzip2.git
+[submodule "Vendor/libpng"]
+	path = Vendor/libpng
+	url = https://github.com/pnggroup/libpng
+[submodule "Vendor/harfbuzz"]
+	path = Vendor/harfbuzz
+	url = https://github.com/harfbuzz/harfbuzz
+[submodule "Vendor/brotli"]
+	path = Vendor/brotli
+	url = https://github.com/google/brotli
