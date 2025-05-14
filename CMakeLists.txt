@@ -144,10 +144,20 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(ZLIB_DLL_OUT "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/z${CONFIG_POSTFIX}.dll")
     set(BZIP2_DLL_IN  "${CMAKE_BINARY_DIR}/Vendor/bz2/${CMAKE_BUILD_TYPE}/bz2.dll")
     set(BZIP2_DLL_OUT "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/bz2-1.dll")
+    set(BROTLI_COMMON_IN  "${CMAKE_BINARY_DIR}/Vendor/brotlicommon/${CMAKE_BUILD_TYPE}/brotlicommon.dll")
+    set(BROTLI_COMMON_OUT "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/brotlicommon.dll")
+    set(BROTLI_DEC_IN  "${CMAKE_BINARY_DIR}/Vendor/brotlidec/${CMAKE_BUILD_TYPE}/brotlidec.dll")
+    set(BROTLI_DEC_OUT "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/brotlidec.dll")
+    set(BROTLI_ENC_IN  "${CMAKE_BINARY_DIR}/Vendor/brotlienc/${CMAKE_BUILD_TYPE}/brotlienc.dll")
+    set(BORTLI_ENC_OUT "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/brotlienc.dll")
+    
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FREETYPE_DLL_IN} ${FREETYPE_DLL_OUT}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZLIB_DLL_IN} ${ZLIB_DLL_OUT}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZIP2_DLL_IN} ${BZIP2_DLL_OUT}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_COMMON_IN} ${BROTLI_COMMON_OUT}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_DEC_IN} ${BROTLI_DEC_OUT}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_ENC_IN} ${BORTLI_ENC_OUT}
         COMMENT "Copy necessary DLLs"
     )
 endif()
