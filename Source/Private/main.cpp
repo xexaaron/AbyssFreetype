@@ -1,6 +1,10 @@
 #include <CmdLine/CmdLine.h>
 #include <FT/abyft.h>
 
+#ifndef ABYSS_FT_VER
+#   define ABYSS_FT_VER "Unknown"
+#endif
+
 struct InFontCfg {
     std::string file = "";
     std::string pt = "12";
@@ -74,15 +78,27 @@ int main(int argc, char** argv) {
 
     InFontCfg in_cfg;
     aby::ft::FontCfg out_cfg;
+    bool version;
 
     if (!cmd.opt("file", "Font file to load", &in_cfg.file, true)
-       .opt("pt", "Requested point size of font (Default: '12')", &in_cfg.pt, false)
-       .opt("dpi", "Dots per inch (Default: '96,96')", &in_cfg.dpi, false)
-       .opt("range", "Character range to load (Default: '32,128')", &in_cfg.range, false)
-       .opt("cache_dir", "Directory to output cached png and binary glyph to (Default '.')", &in_cfg.range, false)
+       .opt("pt", "Requested point size of font (Default: '12')", &in_cfg.pt)
+       .opt("dpi", "Dots per inch (Default: '96,96')", &in_cfg.dpi)
+       .opt("range", "Character range to load (Default: '32,128')", &in_cfg.range)
+       .opt("cache_dir", "Directory to output cached png and binary glyph to (Default '.')", &in_cfg.range)
+       .flag("version", "Display version number and build info", &version, false, {"file"})
        .parse(argc, argv, opts) || !parse_font_cfg(in_cfg, out_cfg))
     {
         return 1;
+    }
+
+    if (version) {
+#ifndef NDEBUG
+        std::string build_mode = "Debug";
+#else
+        std::string build_mode = "Release";
+#endif
+        FT_STATUS("Version: {} {}", ABYSS_FT_VER, build_mode);
+        return 0;
     }
 
     aby::ft::Library& lib = aby::ft::Library::get();

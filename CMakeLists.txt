@@ -14,6 +14,8 @@ else()
     set(CONFIG_POSTFIX "")
 endif()
 
+set(ABYSS_FT_VER 1.0.0)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -163,6 +165,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_DEC_IN} ${BROTLI_DEC_OUT}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_ENC_IN} ${BORTLI_ENC_OUT}
         COMMENT "Copy necessary DLLs"
+        USES_TERMINAL
     )
 endif()
 
@@ -178,5 +181,6 @@ add_executable(${PROJECT_NAME} Source/Private/main.cpp Vendor/CmdLine/Source/Pri
 target_include_directories(${PROJECT_NAME} PRIVATE "Source/Public" "Vendor/CmdLine/Source/Public")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTS})
+target_compile_definitions(${PROJECT_NAME} PRIVATE ABYSS_FT_VER="${ABYSS_FT_VER}")
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}Lib)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Abyss")
