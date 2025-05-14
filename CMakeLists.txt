@@ -1,10 +1,18 @@
  
 cmake_minimum_required(VERSION 3.28.3)
 project(AbyssFT)
-
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_DISABLE_PREDEFINED_TARGETS TRUE)
+
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CONFIG_POSTFIX "d")
+else()
+    set(CONFIG_POSTFIX "")
+endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -110,31 +118,27 @@ set(CPP_HEADERS
 set(TEST_SOURCES Source/Tests/Test.cpp)
 
 
-source_group("Private" FILES ${CPP_SOURCES})
+source_group("Private" FILES ${CPP_SOURCES} Source/Private/main.cpp)
 source_group("Public" FILES ${CPP_HEADERS})
 source_group("Vendor" FILES Vendor/stb/stb/stb_image_write.cpp Vendor/stb/stb/stb_image_write.h)
 source_group("Tests" FILES ${TEST_SOURCES})
 
-add_library(${PROJECT_NAME} STATIC ${CPP_SOURCES} ${CPP_HEADERS})
-target_include_directories(${PROJECT_NAME} PUBLIC "Source/Public" ${FREETYPE_INCLUDE_DIRS} ${STB_IMAGE_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE freetype)
-target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTS})
-add_dependencies(${PROJECT_NAME} freetype)
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Abyss")
+add_library(${PROJECT_NAME}Lib STATIC ${CPP_SOURCES} ${CPP_HEADERS})
+target_include_directories(${PROJECT_NAME}Lib PUBLIC "Source/Public" ${FREETYPE_INCLUDE_DIRS} ${STB_IMAGE_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}Lib PRIVATE freetype)
+target_compile_options(${PROJECT_NAME}Lib PRIVATE ${COMPILE_OPTS})
+add_dependencies(${PROJECT_NAME}Lib freetype)
+set_target_properties(${PROJECT_NAME}Lib PROPERTIES FOLDER "Abyss")
 
 add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
+    TARGET ${PROJECT_NAME}Lib POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CMAKE_SOURCE_DIR}/Source/Tests/Fonts"
             "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/Fonts"
     COMMENT "Copy fonts used by tests"
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CONFIG_POSTFIX "d")
-else()
-    set(CONFIG_POSTFIX "")
-endif()
+
 
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -151,7 +155,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(BROTLI_ENC_IN  "${CMAKE_BINARY_DIR}/Vendor/brotlienc/${CMAKE_BUILD_TYPE}/brotlienc.dll")
     set(BORTLI_ENC_OUT "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/brotlienc.dll")
     
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    add_custom_command(TARGET ${PROJECT_NAME}Lib POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FREETYPE_DLL_IN} ${FREETYPE_DLL_OUT}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZLIB_DLL_IN} ${ZLIB_DLL_OUT}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZIP2_DLL_IN} ${BZIP2_DLL_OUT}
@@ -165,7 +169,14 @@ endif()
 
 add_executable(${PROJECT_NAME}Test ${TEST_SOURCES})
 target_include_directories(${PROJECT_NAME}Test PRIVATE "Source/Public")
-target_link_libraries(${PROJECT_NAME}Test PRIVATE ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}Test PRIVATE ${PROJECT_NAME}Lib)
 target_compile_options(${PROJECT_NAME}Test PRIVATE ${COMPILE_OPTS})
-add_dependencies(${PROJECT_NAME}Test ${PROJECT_NAME})
+add_dependencies(${PROJECT_NAME}Test ${PROJECT_NAME}Lib)
 set_target_properties(${PROJECT_NAME}Test PROPERTIES FOLDER "Abyss/Tests")
+
+add_executable(${PROJECT_NAME} Source/Private/main.cpp Vendor/CmdLine/Source/Private/CmdLine.cpp)
+target_include_directories(${PROJECT_NAME} PRIVATE "Source/Public" "Vendor/CmdLine/Source/Public")
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
+target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTS})
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}Lib)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Abyss")

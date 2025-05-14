@@ -33,11 +33,11 @@ namespace aby::ft {
 	//
 	//
 	struct Glyph {
-		u32 advance;
-		u32 offset;
-		vec2 bearing;
-		vec2 size;
-		vec2 texcoords[4];
+		u32 advance = 0;
+		u32 offset  = 0;
+		vec2 bearing = { 0.f, 0.f };
+		vec2 size 	 = { 0.f, 0.f };
+		vec2 texcoords[4] = { { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f }};
 	};
 
 	using Glyphs = std::unordered_map<char32_t, Glyph>;
@@ -51,15 +51,15 @@ namespace aby::ft {
 	};
 
 	struct CharRange {
-		char32_t start;
-		char32_t end;
+		char32_t start = 32;
+		char32_t end   = 128;
 	};
 
 	struct FontCfg {
-		u32 pt;
-		vec2 dpi;
-		CharRange range;
-		std::filesystem::path path;
+		u32 pt = 14;
+		vec2 dpi = { 96.f, 96.f };
+		CharRange range = { 32, 128 };
+		std::filesystem::path path = "";
 	};
 
 } // namespace aby::ft

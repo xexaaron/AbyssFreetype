@@ -59,9 +59,8 @@ namespace aby::ft {
 	}
 
 	FontData Library::load_glyph_range_ttf(FT_FaceRec_* face, const std::filesystem::path& png_file, const FontCfg& cfg) {
-		constexpr vec2 ATLAS_SIZE = { 512, 512 }; // Texture Atlas Size (Fixed or dynamically sized as needed)
-		u32 tex_width             = ATLAS_SIZE.x;
-		u32 tex_height            = ATLAS_SIZE.y;
+		u32 tex_width   = 512;
+		u32 tex_height  = 512;
 
 		std::vector<char> pixels(tex_width * tex_height, 0); // Initialize pixel buffer with 0 (black)
 
@@ -98,7 +97,7 @@ namespace aby::ft {
 				.bearing   = { static_cast<float>(glyph->bitmap_left), static_cast<float>(glyph->bitmap_top) },
 				.size      = { static_cast<float>(bmp->width), static_cast<float>(bmp->rows) },
 				.texcoords = {
-				              { uvs.x, uvs.y }, // Top-left  (0)
+					{ uvs.x, uvs.y }, // Top-left  (0)
 				    { uvs.z, uvs.y }, // Top-right (1)
 				    { uvs.z, uvs.w }, // Bottom-right (2)
 				    { uvs.x, uvs.w }  // Bottom-left  (3)
