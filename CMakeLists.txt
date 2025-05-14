@@ -177,9 +177,14 @@ target_compile_options(${PROJECT_NAME}Test PRIVATE ${COMPILE_OPTS})
 add_dependencies(${PROJECT_NAME}Test ${PROJECT_NAME}Lib)
 set_target_properties(${PROJECT_NAME}Test PROPERTIES FOLDER "Abyss/Tests")
 
-add_executable(${PROJECT_NAME} Source/Private/main.cpp Vendor/CmdLine/Source/Private/CmdLine.cpp)
-target_include_directories(${PROJECT_NAME} PRIVATE "Source/Public" "Vendor/CmdLine/Source/Public")
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
+
+set(CMDLINE_DIR "Vendor/CmdLine")
+add_subdirectory(${CMDLINE_DIR})
+set(CMDLINE_INCLUDE_DIR "${CMDLINE_DIR}/Source/Public")
+
+add_executable(${PROJECT_NAME} Source/Private/main.cpp)
+target_include_directories(${PROJECT_NAME} PRIVATE "Source/Public" ${CMDLINE_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib CmdLine)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE ABYSS_FT_VER="${ABYSS_FT_VER}")
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}Lib)
