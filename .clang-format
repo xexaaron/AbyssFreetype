@@ -1,0 +1,156 @@
+# Misc
+ColumnLimit: 0
+DisableFormat: false
+Cpp11BracedListStyle: false
+InsertNewlineAtEOF: true
+Language: Cpp
+Standard: Latest
+MaxEmptyLinesToKeep: 1
+ReflowComments: false
+SortUsingDeclarations: LexicographicNumeric
+FixNamespaceComments: true
+
+# Alignment
+AlignConsecutiveAssignments: 
+  Enabled: true
+  AcrossComments: true
+  AlignCompound: true
+
+AlignConsecutiveBitFields:
+  Enabled: true
+  AcrossComments: true
+
+AlignConsecutiveShortCaseStatements: 
+  Enabled: false
+
+AlignTrailingComments:
+  Kind: Always
+
+AlignArrayOfStructures: Right
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: None
+AlignEscapedNewlines: Left
+AlignOperands: AlignAfterOperator
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+RequiresClausePosition: WithPreceding
+
+# Allows
+AllowShortEnumsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLambdasOnASingleLine: Inline
+AllowShortNamespacesOnASingleLine: false
+
+# Breaks/Line Wrapping
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterEnum: false
+  AfterExternBlock: false
+  AfterNamespace: false
+  AfterControlStatement: MultiLine
+  AfterFunction: false
+  AfterStruct: false
+  AfterUnion: false
+
+BreakBeforeConceptDeclarations: Always
+BreakConstructorInitializers: AfterColon
+AlwaysBreakTemplateDeclarations: "Yes"
+CompactNamespaces: true
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: Never 
+
+KeepEmptyLines:
+  AtEndOfFile: true
+  AtStartOfFile: false
+  AtStartOfBlock: false
+
+SeparateDefinitionBlocks: Leave
+WrapNamespaceBodyWithEmptyLines: Always
+
+# Includes
+IncludeBlocks: Regroup
+IncludeCategories:
+  # 1. Local project includes
+  - Regex: "^\"Core/.*\""
+    Priority: 1
+  - Regex: "^\"Rendering/UI/.*\""
+    Priority: 2
+  - Regex: "^\"Rendering/.*\""
+    Priority: 3
+  - Regex: "^\"vk/.*\""
+    Priority: 4
+  - Regex: "^\"Platform/.*\""
+    Priority: 5
+  - Regex: "^\"Utility/.*\""
+    Priority: 6
+
+  # 2. External Library includes
+  - Regex: "^<glfw/.*>"
+    Priority: 10
+  - Regex: "^<glm/.*>"
+    Priority: 11
+  - Regex: "^<vulkan/.*>"
+    Priority: 12
+  - Regex: "^<freetype/.*>"
+    Priority: 13
+  - Regex: "^<gch/.*>"
+    Priority: 14
+  - Regex: "^<stb/.*>"
+    Priority: 15
+
+  # 3. Standard library includes
+  - Regex: "^<.*>"
+    Priority: 20
+
+  # 4. Fallbacks
+  - Regex: "^\".*\""
+    Priority: 99
+
+# Indent
+UseTab: ForIndentation
+TabWidth: 4
+IndentWidth: 4
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+IndentCaseLabels: true
+IndentExternBlock: Indent
+IndentGotoLabels: false
+IndentPPDirectives: AfterHash
+NamespaceIndentation: All
+
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+
+LambdaBodyIndentation: OuterScope
+
+# SpaceAfterOperatorKeyword: false # clang-format 21
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpacesInAngles: Never
+SpacesInParens: Never
+
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true
+
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: 1
+
+
+# Qualifiers/Attributes
+QualifierAlignment: Custom
+QualifierOrder: [static, inline, constexpr, volatile, friend, const, type]
+
+
+# Remove Items
+RemoveEmptyLinesInUnwrappedLines: true
