@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     aby::ft::FontData font_data = font_lib.create_font_data(cache_dir, cfg);
 
     font_data.glyphs;      // Contains the glyphs in a map accessible by using char32_t as a key.
-    font_data.name;        // Equal to the filename of the passed in font (in this case IBMPlexMono-Regular.ttf).
+    font_data.name;        // filename (in this case IBMPlexMono-Regular.ttf).
     font_data.is_mono;     // Boolean indicating if the font is monospaced.
     font_data.png;         // Output png file of the font. Ready to be used in a texture.
     font_data.text_height; // Height of the font in pixels.
@@ -68,28 +68,29 @@ of the data.
 
 ### Variables
 
-```ini
-[FONT_NAME] The filename that was used to load the font.
-[START]     The begin range of the font glyphs. (ie. ascii would be 32-128)
-[END]       The end range of the font glyphs.
-[PT]        The pt size of the font when loaded. 
+```yaml
+FontName:  The filename that was used to load the font.
+FontExt:   The file extension of the loaded font.
+Start:     The begin range of the font glyphs. (ie. ascii would be 32-128)
+End:       The end range of the font glyphs.
+Pt:        The pt size of the font when loaded. 
 ```
 
 ### Filepath naming
 
-```ini
-[FONT_NAME].ttf_[START]_[END]_[PT].bin
+```yaml
+Filepath: "[FontName].[FontExt]_[Start]_[End]_[Pt].bin"
 ```
 
 ### File Format
 
-```ini
-[GLYPH_COUNT]     8  byte uint
-[TEXT_HEIGHT]     4  byte float
-[GLYPHS...]       56 byte struct * [GLYPH_COUNT]
-    [advance]     4  byte uint
-    [offset]      4  byte uint
-    [bearing]     8  byte fvec2
-    [size]        8  byte fvec2
-    [texcoords]   32 byte fvec2[4]
+```yaml
+GlyphCount:      8  byte uint
+TextHeight:      4  byte float
+Glyphs:          56 byte struct
+    advance:     4  byte uint
+    offset:      4  byte uint
+    bearing:     8  byte fvec2
+    size:        8  byte fvec2
+    texcoords:   32 byte fvec2[4]
  ```
