@@ -20,26 +20,20 @@ namespace aby::ft {
 		float w = 0.f;
 	};
 
-	// Glyph Cache Format
-	// File: ${m_Name}_${character_start_range}_${character_end_range}_${m_SizePt}.bin
-	// Layout:
-	//      std::size_t glyph_count. (Not always character_end_range - character_start_range)
-	//      float       text_height.
-	//      bool        is_monospaced.
-	//      {
-	//          char32_t    character
-	//          Glyph       glyph
-	//      }...
-	//
-	//
 	struct Glyph {
-		u32 advance = 0;
-		u32 offset  = 0;
-		vec2 bearing = { 0.f, 0.f };
-		vec2 size 	 = { 0.f, 0.f };
-		vec2 texcoords[4] = { { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f }, { 0.f, 0.f }};
+		u32 advance       = 0;
+		u32 offset        = 0;
+		vec2 bearing      = { 0.f, 0.f };
+		vec2 size         = { 0.f, 0.f };
+		vec2 texcoords[4] = {
+			{ 0.f, 0.f },
+            { 0.f, 0.f },
+            { 0.f, 0.f },
+            { 0.f, 0.f }
+		};
+		u64 reserved = 0;
 	};
-
+	static_assert(sizeof(Glyph) == 64);
 	using Glyphs = std::unordered_map<char32_t, Glyph>;
 
 	struct FontData {
@@ -56,14 +50,57 @@ namespace aby::ft {
 	};
 
 	struct FontCfg {
-		u32 pt = 14;
-		vec2 dpi = { 96.f, 96.f };
-		CharRange range = { 32, 128 };
+		u32 pt                     = 14;
+		vec2 dpi                   = { 96.f, 96.f };
+		CharRange range            = { 32, 128 };
 		std::filesystem::path path = "";
-		bool verbose = false;
+		bool verbose               = false;
+	};
+
+	struct Version {
+		constexpr Version(std::uint32_t major, std::uint32_t minor, std::uint32_t patch) :
+		    value((major & 0xFF) << 24 | (minor & 0xFF) << 16 | (patch & 0xFF) << 8) {
+		}
+		constexpr Version(std::uint32_t value) : value(value) {}
+
+		constexpr std::tuple<std::uint32_t, std::uint32_t, std::uint32_t> get() const {
+			return {
+				(value >> 24) & 0xFF,
+				(value >> 16) & 0xFF,
+				(value >> 8) & 0xFF
+			};
+		}
+
+		constexpr bool operator==(const Version& other) const {
+			return value == other.value;
+		}
+		constexpr bool operator!=(const Version& other) const {
+			return value != other.value;
+		}
+		
+		std::uint32_t value;
 	};
 
 } // namespace aby::ft
+
+namespace std {
+
+	template <>
+	class formatter<aby::ft::Version> {
+	public:
+		template <class ParseCtx>
+		constexpr ParseCtx::iterator parse(ParseCtx& ctx) {
+			return ctx.begin();
+		}
+
+		template <class FmtCtx>
+		FmtCtx::iterator format(const aby::ft::Version& v, FmtCtx& ctx) const {
+			auto [major, minor, patch] = v.get();
+			return std::format_to(ctx.out(), "{}.{}.{}", major, minor, patch);
+		}
+	};
+
+} // namespace std
 
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
@@ -78,6 +115,8 @@ namespace aby::ft {
 		static Library& get();
 
 		FontData create_font_data(const std::filesystem::path& cache_dir, const FontCfg& cfg);
+		
+		static constexpr Version version() { return s_Version; }
 	private:
 		::FT_FaceRec_* create_face(const FontCfg& cfg);
 		void destroy_face(::FT_FaceRec_* face, const FontCfg& cfg);
@@ -90,7 +129,9 @@ namespace aby::ft {
 		Library();
 		~Library();
 	private:
-		::FT_LibraryRec_* m_Library = nullptr;
+		::FT_LibraryRec_* m_Library               = nullptr;
+		std::ostringstream m_VerboseStream		  = {};		
+		static inline constexpr Version s_Version = Version(ABY_FT_VER_MAJOR, ABY_FT_VER_MINOR, ABY_FT_VER_PATCH);
 	};
 
 } // namespace aby::ft

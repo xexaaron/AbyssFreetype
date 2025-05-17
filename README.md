@@ -114,10 +114,11 @@ Filepath: "[FontName].[FontExt]_[Start]_[End]_[Pt].bin"
 ```yaml
 GlyphCount:      8  byte uint
 TextHeight:      4  byte float
-Glyphs:          56 byte struct
+Glyphs:          64 byte struct
     advance:     4  byte uint
     offset:      4  byte uint
     bearing:     8  byte fvec2
     size:        8  byte fvec2
     texcoords:   32 byte fvec2[4]
+    reserved:    8  byte uint
  ```

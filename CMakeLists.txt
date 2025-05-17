@@ -4,6 +4,10 @@ project(AbyssFT)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_DISABLE_PREDEFINED_TARGETS TRUE)
 
+set(ABY_FT_VER_MAJOR 1)
+set(ABY_FT_VER_MINOR 0)
+set(ABY_FT_VER_PATCH 0)
+
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
@@ -50,7 +54,6 @@ endif()
 
 set(VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vendor")
 set(STB_IMAGE_INCLUDE_DIR "Vendor/stb")
-set(ABYSS_FT_VER 1.0.0)
 
 set(ZLIB_DIR "${VENDOR_DIR}/zlib")
 set(ZLIB_BUILD_TESTING OFF CACHE BOOL "Enable Zlib Examples as tests")
@@ -120,6 +123,11 @@ set_vendor_properties(freetype "Dependencies/freetype")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 add_dependencies(freetype zlib bzip2 brotli png_static)
 
+set(CMDLINE_DIR "${VENDOR_DIR}/CmdLine")
+add_subdirectory(${CMDLINE_DIR})
+set(CMDLINE_INCLUDE_DIR "${CMDLINE_DIR}/Source/Public")
+set(ABY_PP_INCLUDE_DIR "${CMDLINE_DIR}/Vendor/AbyssPrettyPrint/Source/Public")
+
 if (MSVC)
     # W4                    warn level 4
     # wd4100                unreferenced formal parameter
@@ -149,11 +157,16 @@ source_group("Vendor" FILES Vendor/stb/stb/stb_image_write.cpp Vendor/stb/stb/st
 source_group("Tests" FILES ${TEST_SOURCES})
 
 add_library(${PROJECT_NAME}Lib STATIC ${CPP_SOURCES} ${CPP_HEADERS})
-target_include_directories(${PROJECT_NAME}Lib PUBLIC "Source/Public" ${FREETYPE_INCLUDE_DIRS} ${STB_IMAGE_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}Lib PRIVATE freetype)
+target_include_directories(${PROJECT_NAME}Lib PUBLIC "Source/Public" ${FREETYPE_INCLUDE_DIRS} ${STB_IMAGE_INCLUDE_DIR} ${ABY_PP_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}Lib PRIVATE freetype PrettyPrint)
 target_compile_options(${PROJECT_NAME}Lib PRIVATE ${COMPILE_OPTS})
 add_dependencies(${PROJECT_NAME}Lib freetype)
 set_target_properties(${PROJECT_NAME}Lib PROPERTIES FOLDER "Abyss")
+target_compile_definitions(${PROJECT_NAME}Lib PUBLIC 
+    ABY_FT_VER_MAJOR=${ABY_FT_VER_MAJOR}
+    ABY_FT_VER_MINOR=${ABY_FT_VER_MINOR}
+    ABY_FT_VER_PATCH=${ABY_FT_VER_PATCH}
+)
 
 add_custom_command(
     TARGET ${PROJECT_NAME}Lib POST_BUILD
@@ -195,15 +208,9 @@ target_compile_options(${PROJECT_NAME}Test PRIVATE ${COMPILE_OPTS})
 add_dependencies(${PROJECT_NAME}Test ${PROJECT_NAME}Lib)
 set_target_properties(${PROJECT_NAME}Test PROPERTIES FOLDER "Abyss/Tests")
 
-set(CMDLINE_DIR "${VENDOR_DIR}/CmdLine")
-add_subdirectory(${CMDLINE_DIR})
-set(CMDLINE_INCLUDE_DIR "${CMDLINE_DIR}/Source/Public")
-set(ABY_PP_INCLUDE_DIR "${CMDLINE_DIR}/Vendor/AbyssPrettyPrint/Source/Public")
-
 add_executable(${PROJECT_NAME} Source/Private/main.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE "Source/Public" ${CMDLINE_INCLUDE_DIR} ${ABY_PP_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib CmdLine)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTS})
-target_compile_definitions(${PROJECT_NAME} PRIVATE ABYSS_FT_VER="${ABYSS_FT_VER}")
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}Lib)
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Abyss")

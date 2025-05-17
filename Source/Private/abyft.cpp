@@ -1,13 +1,12 @@
 #include "FT/abyft.h"
+#include "FT/serializer.h"
 
 #include <freetype/freetype.h>
+#include <stb/stb_image_write.h>
 
+#include <chrono>
 #include <format>
 #include <iostream>
-#include <chrono>
-
-#include "FT/serializer.h"
-#include "stb/stb_image_write.h"
 
 namespace aby::ft {
 
@@ -25,7 +24,12 @@ namespace aby::ft {
 	}
 
 	FontData Library::create_font_data(const std::filesystem::path& cache_dir, const FontCfg& cfg) {
-		return load_glyph_range(cache_dir, cfg);
+		FontData data =  load_glyph_range(cache_dir, cfg);
+		if (cfg.verbose) {
+			m_VerboseStream.clear();
+			util::pretty_print(m_VerboseStream.str(), "AbyssFreetype");
+		}
+		return data;
 	}
 
 	::FT_FaceRec_* Library::create_face(const FontCfg& cfg) {
@@ -33,17 +37,10 @@ namespace aby::ft {
 		std::string path_str = cfg.path.string();
 		FT_CHECK(::FT_New_Face(m_Library, path_str.c_str(), FT_Long(0), &face));
 		FT_CHECK(::FT_Set_Char_Size(face, FT_F26Dot6(0), cfg.pt << 6u, static_cast<FT_UInt>(cfg.dpi.x), static_cast<FT_UInt>(cfg.dpi.y)));
-		if (cfg.verbose) {
-			FT_STATUS("Created new font face: {}", path_str);
-			FT_STATUS(" -- Character Width: {}", cfg.pt << 6u);
-		}
 		return face;
 	}
 
 	void Library::destroy_face(::FT_FaceRec_* face, const FontCfg& cfg) {
-		if (cfg.verbose) {
-			FT_STATUS("Destroying current font face: {}", cfg.path.string());
-		}
 		::FT_Done_Face(face);
 	}
 
@@ -57,16 +54,16 @@ namespace aby::ft {
 		if (cfg.verbose) {
 			start = std::chrono::high_resolution_clock::now();
 		}
-		
+
 		if (std::filesystem::exists(png_file) && std::filesystem::exists(glyph_file)) {
 			if (cfg.verbose) {
-				FT_STATUS("Loading font from cache: {}", glyph_file.string());
+				m_VerboseStream << std::format("  Loading font from cache: \x1b[4;34m{}\x1b[0m\n\n", glyph_file.string());
 			}
 			out = load_glyph_range_bin(glyph_file, cfg);
 		} else {
 			if (cfg.verbose) {
-				FT_STATUS("Loading font from file: {}", cfg.path.filename().string());
-			} 
+				m_VerboseStream << std::format("  Loading font from file: \x1b[4;34m{}\x1b[0m\n\n", cfg.path.string());
+			}
 			FT_Face face = create_face(cfg);
 			out          = load_glyph_range_ttf(face, png_file, cfg);
 			cache_glyphs(cache_dir, name, out, cfg);
@@ -75,11 +72,9 @@ namespace aby::ft {
 
 		if (cfg.verbose) {
 			using clock = std::chrono::high_resolution_clock;
-			using ns = std::chrono::nanoseconds;
-			float elapsed_seconds =
-				std::chrono::duration_cast<ns>(clock::now() - start).count()
-				* 0.001f * 0.001f;
-			FT_STATUS("Font Loading took a total of {}ms", elapsed_seconds);
+			using ns    = std::chrono::nanoseconds;
+			float elapsed = std::chrono::duration_cast<ns>(clock::now() - start).count() * 0.001f * 0.001f;
+			m_VerboseStream << std::format("  Font Loading took a total of \x1b[2;38;5;120m{}\x1b[0mms\n", elapsed);
 		}
 
 		out.name = name;
@@ -88,8 +83,8 @@ namespace aby::ft {
 	}
 
 	FontData Library::load_glyph_range_ttf(FT_FaceRec_* face, const std::filesystem::path& png_file, const FontCfg& cfg) {
-		u32 tex_width   = 512;
-		u32 tex_height  = 512;
+		u32 tex_width  = 512;
+		u32 tex_height = 512;
 
 		std::vector<char> pixels(tex_width * tex_height, 0); // Initialize pixel buffer with 0 (black)
 
@@ -160,8 +155,18 @@ namespace aby::ft {
 
 	FontData Library::load_glyph_range_bin(const std::filesystem::path& cache, const FontCfg& cfg) {
 		Serializer serializer(SerializeOpts{ .file = cache, .mode = ESerializeMode::READ });
+		std::uint32_t version = 0;
 		std::size_t glyph_count = 0;
 		FontData out;
+
+		serializer.read(version);
+
+		FT_ASSERT(Version(version) == s_Version, 
+			"  Version of cached font glyphs does not match library version\n"
+			"  File Version:    {}\n"
+			"  Library Version: {}", 
+			Version(version), s_Version
+		);
 
 		serializer.read(glyph_count);
 		serializer.read(out.text_height);
@@ -183,6 +188,7 @@ namespace aby::ft {
 		std::filesystem::path bin_cache_path = cache_path(cache_dir, name, ".bin", cfg);
 
 		Serializer serializer(SerializeOpts{ .file = bin_cache_path, .mode = ESerializeMode::WRITE });
+		serializer.write(s_Version.value);
 		serializer.write(data.glyphs.size());
 		serializer.write(data.text_height);
 		serializer.write(data.is_mono);

@@ -42,7 +42,6 @@ AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: WithoutElse
 AllowShortLambdasOnASingleLine: Inline
-AllowShortNamespacesOnASingleLine: false
 
 # Breaks/Line Wrapping
 BreakBeforeBraces: Custom
@@ -64,13 +63,7 @@ CompactNamespaces: true
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Never 
 
-KeepEmptyLines:
-  AtEndOfFile: true
-  AtStartOfFile: false
-  AtStartOfBlock: false
-
 SeparateDefinitionBlocks: Leave
-WrapNamespaceBodyWithEmptyLines: Always
 
 # Includes
 IncludeBlocks: Regroup
@@ -151,6 +144,3 @@ SpacesInLineCommentPrefix:
 QualifierAlignment: Custom
 QualifierOrder: [static, inline, constexpr, volatile, friend, const, type]
 
-
-# Remove Items
-RemoveEmptyLinesInUnwrappedLines: true
