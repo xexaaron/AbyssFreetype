@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <format>
 
 #ifndef ABY_DBG_BREAK
 #	ifdef _MSC_VER

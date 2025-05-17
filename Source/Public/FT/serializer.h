@@ -1,7 +1,8 @@
 #pragma once
 #include <filesystem>
 #include <vector>
-
+#include <memory>
+#include <cstring>
 #include "FT/common.h"
 
 namespace aby::ft {
