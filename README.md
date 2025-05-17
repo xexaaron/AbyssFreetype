@@ -112,6 +112,7 @@ Filepath: "[FontName].[FontExt]_[Start]_[End]_[Pt].bin"
 ### File Format
 
 ```yaml
+Version:         4  byte uint
 GlyphCount:      8  byte uint
 TextHeight:      4  byte float
 Glyphs:          64 byte struct
