@@ -66,83 +66,24 @@ int main(int argc, char** argv) {
 }
 ```
 
-### CmdLine
+### AbyssFT Example
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page Title</title>
-    <style>
-        .boxed {
-            margin: 10px 0 10px 0px;
-            padding: 5px;
-            border-radius: 10px;
-            text-align: left;
-            font-family: monospace;
-            white-space: pre-wrap;
-            background-color: #222;
-       }
-      .option {
-        color: #3399FF; /* blue color */
-        font-weight: bold;
-      }
-      .desc {
-        text-decoration: underline;
-        margin-left: -35px;
-        padding-left: 0px;
-        padding-bottom: 20px;
-      }
-      .opt-desc {
-        text-decoration: underline;
-        margin-left: 20px;
-      }
-      /* Make sure the list lines are nicely spaced */
-      .line {
-        padding-top: 0px;
-        padding-bottom: 0px;
-        margin: 0px;
-        margin-top: -20px;
-        margin-bottom: -20px;
-        color: grey;
-        line-height: 1; /* or 1 */
-        height: 1.2em;
-      }
-      .string {
-        color:rgb(238, 160, 129);
-      }
-      .integer {
-        color: rgb(192, 231, 170);
-      }
-      .exec {
-        color: rgb(238, 240, 131);
-      }
-    </style>
-  </head>
-  <body style="align: left;">
-    <div class="boxed" style="border: 3px solid green;">
-      <span class="desc">Cmdline utility for use of AbyssFreetype library</span>
-      <div class="line"></div>
-      <div class="line"><span class="option"> <span style="color: magenta">*</span> [--file]</span><span>     </span><span class="opt-desc">Font file to load</span></div>
-      <div class="line"><span class="option">   [--pt]</span><span>       </span><span class="opt-desc">Requested point size of font (Default: '12')</span></div>
-      <div class="line"><span class="option">   [--dpi]</span><span>      </span><span class="opt-desc">Dots per inch (Default: '96,96')</span></div>
-      <div class="line"><span class="option">   [--range]</span><span>    </span><span class="opt-desc">Character range to load (Default: '32,128')</span></div>
-      <div class="line"><span class="option">   [--cache_dir]</span><span class="opt-desc">Directory to output cached png and binary glyph to (Default '.')</span></div>
-      <div class="line"><span class="option">   [-version]</span><span>   </span><span class="opt-desc">Display version number and build info</span></div>
-      <div class="line"><span class="option">   [-v]</span><span>         </span><span class="opt-desc">Enable verbose log messages</span></div>
-      <div class="line"><span class="option">   [-q]</span><span>         </span><span class="opt-desc">Suppress output log messages</span></div>
-      <div class="line"><span class="option">   [-h]</span><span>         </span><span class="opt-desc">Display help information.</span></div>
-    </div>
-    <div>
-        The command below will output two files in the cache directory.<br>
-        A .png file containing the characters that can be used by the librarys glyphs to render the font.<br>
-        A .bin file for faster loading of the font glyphs next time when using the same settings.<br>
-    </div>
-    <div class="boxed" style="border: 3px solid purple; align-items: left;"><span><span class="exec">   AbyssFT</span> </span>--file=<span class="string">"my_font.my_font_ext"</span> --pt=<span  class="integer">14</span> --dpi=<span class="string">"96,96"</span> --range=<span class="string">"32,128"</span> --cache_dir=<span class="string">"./Cache"</span></div>
-    </div>
-  </body>
-</html>
+The command below will output two files in the cache directory:
+
+- A `.png` file containing the font characters for rendering.
+- A `.bin` file for faster loading of the same font glyphs.
+
+Using only required parameters
+
+```bash
+AbyssFT --file="my_font.ttf"
+```
+
+Using optional parameters
+
+```bash
+AbyssFT --file="my_font.ttf" --pt=14 --dpi="96,96" --range="32,128" --cache_dir="./Cache"
+```
 
 ## Font Cache Format
 
