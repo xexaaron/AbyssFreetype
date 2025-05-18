@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <memory>
 #include <vector>
+#include <PrettyPrint/PrettyPrint.h>
 
 #include "FT/common.h"
 
