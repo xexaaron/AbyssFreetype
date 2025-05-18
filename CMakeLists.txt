@@ -171,7 +171,7 @@ target_compile_definitions(${PROJECT_NAME}Lib PUBLIC
 add_custom_command(
     TARGET ${PROJECT_NAME}Lib POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_SOURCE_DIR}/Source/Tests/Fonts"
+            "${CMAKE_CURRENT_SOURCE_DIR}/Source/Tests/Fonts"
             "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/AbyssFreetypeTests/Fonts"
     COMMENT "Copy fonts used by tests"
 )
