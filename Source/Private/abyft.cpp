@@ -3,6 +3,7 @@
 
 #include <freetype/freetype.h>
 #include <stb/stb_image_write.h>
+#include <PrettyPrint/PrettyPrint.h>
 
 #include <chrono>
 #include <format>

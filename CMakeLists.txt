@@ -172,7 +172,7 @@ add_custom_command(
     TARGET ${PROJECT_NAME}Lib POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CMAKE_SOURCE_DIR}/Source/Tests/Fonts"
-            "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/Fonts"
+            "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/AbyssFreetypeTests/Fonts"
     COMMENT "Copy fonts used by tests"
 )
 
@@ -193,13 +193,19 @@ add_custom_command(TARGET ${PROJECT_NAME}Lib POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${FREETYPE_DLL_IN} ${FREETYPE_DLL_OUT}
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZLIB_DLL_IN} ${ZLIB_DLL_OUT}
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZIP2_DLL_IN} ${BZIP2_DLL_OUT}
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_COMMON_IN} ${BROTLI_COMMON_OUT}
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_DEC_IN} ${BROTLI_DEC_OUT}
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_ENC_IN} ${BORTLI_ENC_OUT}
     COMMENT "Copy necessary DLLs"
     USES_TERMINAL
 )
 
+if (EXISTS ${BROTLI_COMMON_IN} AND EXISTS ${BROTLI_DEC_IN} AND EXISTS ${BROTLI_ENC_IN})
+    add_custom_command(TARGET ${PROJECT_NAME}Lib POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_COMMON_IN} ${BROTLI_COMMON_OUT}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_DEC_IN} ${BROTLI_DEC_OUT}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BROTLI_ENC_IN} ${BORTLI_ENC_OUT}
+        COMMENT "Copy necessary DLLs"
+        USES_TERMINAL
+    )
+endif()
 
 add_executable(${PROJECT_NAME}Test ${TEST_SOURCES})
 target_include_directories(${PROJECT_NAME}Test PRIVATE "Source/Public")

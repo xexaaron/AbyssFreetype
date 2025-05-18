@@ -1,6 +1,6 @@
 #include <filesystem>
 #include <optional>
-
+#include <PrettyPrint/PrettyPrint.h>
 #include "FT/abyft.h"
 
 #ifdef _WIN32
@@ -54,7 +54,7 @@ namespace aby::ft::test {
 int main(int argc, char** argv) {
 	int res = 0;
 
-	std::filesystem::path font_dir = std::filesystem::path(argv[0]).parent_path() / "Fonts";
+	std::filesystem::path font_dir = std::filesystem::path(argv[0]).parent_path() / "AbyssFreetypeTests" / "Fonts";
 
 	{
 		auto ttf = aby::ft::test::load_ttf(font_dir / "IBMPlexMono" / "IBMPlexMono-Regular.ttf");
