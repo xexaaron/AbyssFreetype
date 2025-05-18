@@ -177,7 +177,21 @@ namespace aby::ft {
 			char32_t character;
 			Glyph glyph;
 			serializer.read(character);
-			serializer.read(glyph);
+			serializer.read(glyph.advance);
+			serializer.read(glyph.offset);
+			serializer.read(glyph.bearing.x);
+			serializer.read(glyph.bearing.y);
+			serializer.read(glyph.size.x);
+			serializer.read(glyph.size.y);
+			serializer.read(glyph.texcoords[0].x);
+			serializer.read(glyph.texcoords[0].y);
+			serializer.read(glyph.texcoords[1].x);
+			serializer.read(glyph.texcoords[1].y);
+			serializer.read(glyph.texcoords[2].x);
+			serializer.read(glyph.texcoords[2].y);
+			serializer.read(glyph.texcoords[3].x);
+			serializer.read(glyph.texcoords[3].y);
+			serializer.read(glyph.reserved);
 			out.glyphs.emplace(character, glyph);
 		}
 
@@ -194,7 +208,21 @@ namespace aby::ft {
 		serializer.write(data.is_mono);
 		for (const auto& [character, glyph] : data.glyphs) {
 			serializer.write(character);
-			serializer.write(glyph);
+			serializer.write(glyph.advance);
+			serializer.write(glyph.offset);
+			serializer.write(glyph.bearing.x);
+			serializer.write(glyph.bearing.y);
+			serializer.write(glyph.size.x);
+			serializer.write(glyph.size.y);
+			serializer.write(glyph.texcoords[0].x);
+			serializer.write(glyph.texcoords[0].y);
+			serializer.write(glyph.texcoords[1].x);
+			serializer.write(glyph.texcoords[1].y);
+			serializer.write(glyph.texcoords[2].x);
+			serializer.write(glyph.texcoords[2].y);
+			serializer.write(glyph.texcoords[3].x);
+			serializer.write(glyph.texcoords[3].y);
+			serializer.write(glyph.reserved);
 		}
 		serializer.save();
 	}

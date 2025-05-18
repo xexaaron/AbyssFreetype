@@ -63,6 +63,27 @@ int main(int argc, char** argv) {
 			res = 1;
 		} else {
 			FT_STATUS("Test Succeeded: {}", "Load TTF");
+			aby::ft::FontData fd = ttf.value();
+			std::string info, glyphs;
+			info += "  Name:   " + fd.name + "\n";
+			info += "  Mono:   " + std::to_string(fd.is_mono) + "\n";
+			info += "  PNG:    " + fd.png.string() + "\n";
+			info += "  Height: " + std::to_string(fd.text_height) + "\n";
+			info += "  Glyphs: " + std::to_string(fd.glyphs.size())  + "\n";
+			for (auto& [c, g] : fd.glyphs) {
+				info += "    Char:    " + std::string(1, c) + (c == U' ' ? " " : "") + "\n";
+				info += "    Advance: "  + std::to_string(g.advance) + "\n";
+				info += "    Bearing: (" + std::to_string(g.bearing.x) + ", " + std::to_string(g.bearing.y) + ")\n";
+				info += "    Offset:  " + std::to_string(g.offset) + "\n";
+				info += "    Size:    (" + std::to_string(g.size.x) + ", " + std::to_string(g.size.y) + ")\n";
+				info += "    Texcoords: 4\n"; 
+				info += "       Top-Left:     (" + std::to_string(g.texcoords[0].x) + ", " + std::to_string(g.texcoords[0].y) + ")\n";   
+				info += "       Top-Right:    (" + std::to_string(g.texcoords[1].x) + ", " + std::to_string(g.texcoords[1].y) + ")\n";
+				info += "       Bottom-Right: (" + std::to_string(g.texcoords[2].x) + ", " + std::to_string(g.texcoords[2].y) + ")\n";
+				info += "       Bottom-Left:  (" + std::to_string(g.texcoords[3].x) + ", " + std::to_string(g.texcoords[3].y) + ")\n";
+			}
+			aby::util::pretty_print(info, "AbyssFTTest");
+
 		}
 	}
 
