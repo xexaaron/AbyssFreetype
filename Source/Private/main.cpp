@@ -79,6 +79,7 @@ int main(int argc, char** argv) {
 		.cerr        = std::cerr,
 		.help        = true,
 		.term_colors = true,
+		.log_cmd     = true,
 	};
 
 	aby::util::InFontCfg in_cfg;
