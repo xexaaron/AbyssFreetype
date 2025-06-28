@@ -76,13 +76,13 @@ The command below will output two files in the cache directory:
 Using only required parameters
 
 ```bash
-AbyssFT --file="my_font.ttf"
+AbyssFT --file "my_font.ttf"
 ```
 
 Using optional parameters
 
 ```bash
-AbyssFT --file="my_font.ttf" --pt=14 --dpi="96,96" --range="32,128" --cache_dir="./Cache"
+AbyssFT --file "my_font.ttf" --pt 14 --dpi "96,96" --range "32,128" --cache_dir "./Cache"
 ```
 
 ## Font Cache Format
